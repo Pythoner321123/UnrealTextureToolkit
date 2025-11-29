@@ -1,183 +1,176 @@
-#A lightweight Unreal Engine C++ utility library for pixel-level GPU/CPU data interchange
+# Unreal Image Conversion Library
 
-UEColorDataToolkit is a small but powerful Unreal Engine C++ Blueprint Function Library that provides safe, easy-to-use helpers for converting GPU image data into CPU-friendly arrays — and back again.
+A lightweight Unreal Engine C++ + Blueprint library for converting Render Targets, Textures, and raw Color Arrays.
 
-This toolkit exposes three core operations:
+📘 Overview
 
-Render Target → Color Array (GPU → CPU readback)
+Unreal Image Conversion Library provides three essential low-level functions for handling GPU ↔ CPU image data inside Unreal Engine.
 
-Color Array → Render Target (CPU → GPU write)
+It exposes safe and Blueprint-friendly versions of common operations that developers normally struggle to implement on their own:
 
-Color Array → Texture2D (CPU → GPU texture creation)
+Read pixels from a Render Target into a CPU array
 
-These functions streamline gameplay systems that require pixel manipulation, runtime drawing, image serialization, or saving/loading dynamic visual content.
+Write a CPU color array into a Render Target
+
+Generate a Texture2D dynamically from a CPU color array
+
+This is ideal for systems such as:
+
+In-game painting
+
+Screenshot capture & processing
+
+Texture streaming
+
+Data-driven UI
+
+Procedural texture generation
+
+Save/load image data
+
+Pixel-based simulation systems
 
 🚀 Features
-✔ GPU → CPU Image Extraction
 
-Read pixels from a UTextureRenderTarget2D into a Blueprint-friendly TArray<FColor> so you can:
+✔ Render Target → Color Array (GPU → CPU)
 
-save drawings
+✔ Color Array → Render Target (CPU → GPU)
 
-serialize pixel data
+✔ Color Array → Texture2D (CPU → GPU + asset creation)
 
-process images with C++ or Blueprint logic
+✔ Fully Blueprint-exposed
 
-send data through online replication or save systems
+✔ Designed for save/load systems
 
-✔ CPU → GPU Render Target Updating
+✔ Works with any pixel format supported by Unreal
 
-Take any color array and push it directly onto a render target, making it visible in the world instantly.
+✔ Lightweight, dependency-free C++
 
-✔ CPU → GPU Texture Generation
+🔧 Functions
+1. RenderTargetToColorArray
 
-Convert raw pixel arrays into brand-new UTexture2D assets at runtime.
+Direction: GPU → CPU
+Reads pixel data from a UTextureRenderTarget2D and returns an array of FColor.
 
-📦 Quick Overview of Included Functions
-1. RenderTargetToColorArray(RenderTarget) → ColorArray
+Use cases:
 
-Reads all pixel data from the given RenderTarget into a CPU-side array.
+Saving a drawn canvas
 
-Use When:
+Extracting visual data for gameplay logic
 
-You want to save player drawings.
+Serializing image states
 
-You need to serialize textures into a savegame or JSON.
+2. ColorArrayToRenderTarget
 
-You want to do CPU-side image processing.
+Direction: CPU → GPU
+Writes a given array of colors into an existing Render Target.
 
-2. ColorArrayToRenderTarget(Data, Target) → bool
+Use cases:
 
-Writes CPU pixel data into a Render Target.
+Loading saved drawings
 
-Use When:
+Overwriting a render target with processed data
 
-You're loading saved drawings.
+Displaying procedurally computed images
 
-You're dynamically generating images on the CPU.
+3. ColorArrayToTexture2D
 
-You want to reconstruct visuals from arrays.
+Direction: CPU → GPU
+Creates a new UTexture2D from a color array.
 
-3. ColorArrayToTexture2D(Data) → Texture2D
+Use cases:
 
-Creates or updates a UTexture2D asset using raw pixel data.
+Creating UI icons dynamically
 
-Use When:
+Converting raw image data into textures
 
-You need a permanent texture asset instead of a transient render target.
+Generating crafting/item icons at runtime
 
-You want to use the image in UI, world meshes, materials, etc.
+📦 Installation
+1. Clone the Repository
+git clone https://github.com/YourName/UnrealImageConversionLibrary.git
 
-🧠 Typical Processing Order
+2. Add to Your Unreal Project
 
-If you're doing a full save/load cycle:
+Place the plugin or source folder into your project's /Plugins or /Source directory.
 
-SAVE
+Regenerate project files.
+
+Recompile.
+
+3. Enable From Editor
+
+Edit → Plugins → Project → Image Conversion Library
+
+🧩 Blueprint Usage Order
+
+When doing Save & Load, use the functions in this order:
+
+Saving Images
 
 1️⃣ Render Target → Color Array
-2️⃣ Save Color Array in SaveGame / GameInstance / File
+2️⃣ Store the Color Array (GI / SaveGame / Disk)
 
-LOAD
+Loading Images
 
-3️⃣ Color Array → Render Target or Color Array → Texture2D
+1️⃣ Retrieve stored Color Array
+2️⃣ Color Array → Render Target or Color Array → Texture2D
 
-🔧 Installation & Setup
-1. Add to Your C++ Project
+📁 Folder Structure
+/Source
+    /ImageConversionLibrary
+        ImageConversionLibrary.Build.cs
+        Public/
+            ColorArrayConversionBPLibrary.h
+        Private/
+            ColorArrayConversionBPLibrary.cpp
 
-Place the library .h and .cpp files into:
+🧪 Example Blueprint Graph
 
-/Source/YourProject/Private
-/Source/YourProject/Public
+✔ Read player’s drawing → Save color data
+✔ Load color data → Restore drawing
+✔ Display restored drawing on any mesh or widget
 
-2. Add Module Dependencies
+📚 Documentation Goals
 
-In your Build.cs:
+This library is meant to solve common problems such as:
 
-PublicDependencyModuleNames.AddRange(new string[]
-{
-    "Core", "CoreUObject", "Engine", "RenderCore", "RHI"
-});
+Why can’t I save a Render Target?
 
-3. Expose to Blueprint
+Why can’t I serialize a Material Instance Dynamic?
 
-Each function is UFUNCTION(BlueprintCallable) so the nodes appear automatically inside Blueprints under:
+How do I convert GPU textures into UObject assets?
 
-"Color Data Toolkit" Category
+How do I get pixel-accurate data into Blueprints?
 
-🧪 Example Use Cases
-✏️ Player Drawing System
+With these functions, you finally can.
 
-Capture strokes → update RenderTarget → save result → reload later.
+🛠 Future Improvements
 
-🖼 Runtime Composite Graphics
+Texture compression helpers
 
-Generate textures for:
+PNG/JPEG loading (optional)
 
-crafting icons
+Async CPU/GPU copy operations
 
-in-world screens
+Mip-generation helpers
 
-map tiles
+Material Instance → Serialized Metadata support
 
-UI previews
+🧑‍💻 Contribution
 
-📥 Import Pixel Data
+Pull requests are welcome!
+Please open an issue for feature requests or bug reports.
 
-Load images from disk → decode → fill a color array → create a texture in-game.
+📄 License
 
-🎮 Sandbox / Factory Game Systems
+MIT License — free for commercial and non-commercial use.
 
-(yes, perfect for your factorio-inspired systems)
+If you want, I can also generate:
+✅ GitHub repo description
+✅ Repository tags
+✅ A professional project logo (via image generation)
+✅ Sample C++ usage
+✅ A wiki page structure
 
-store machine screen states
-
-serialize production graphs as images
-
-save inspection UIs as textures
-
-📁 Repository Structure
-UEColorDataToolkit/
-│
-├── Source/
-│   ├── UEColorDataToolkit/
-│   │   ├── ColorDataLibrary.h
-│   │   ├── ColorDataLibrary.cpp
-│
-├── README.md  ← you are here
-└── LICENSE
-
-🤝 Contributing
-
-Pull requests, improvements, and bug reports are welcome.
-Please follow Unreal's formatting style (Allman brackets, PascalCase class names, etc.)
-
-📝 License
-
-MIT – free for commercial and non-commercial use.
-
-🌟 Why This Library Exists
-
-Unreal Engine provides several low-level ways to read/write pixel data, but they are verbose, unsafe, or not exposed to Blueprint.
-
-This library wraps those operations into:
-
-safe
-
-blueprint-friendly
-
-minimal
-
-performant
-
-utility functions that solve a common need in many games:
-moving pixel data between CPU and GPU in both directions.
-
-If you'd like, I can also generate:
-
-✔ A logo
-✔ Badges (build status, license, version, etc.)
-✔ A sample project / demo code
-✔ A .uproject plugin version
-✔ API reference documentation
-
-Just tell me!
+Just say the word.
